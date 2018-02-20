@@ -84,7 +84,7 @@ contract StandardToken is Token {
     uint256 public totalSupply;
 }
 
-contract C50Test is StandardToken { 
+contract C50Test2 is StandardToken { 
 
     /* Public variables of the token */
 
@@ -98,12 +98,12 @@ contract C50Test is StandardToken {
 
     // This is a constructor function 
     // which means the following function name has to match the contract name declared above
-    function C50Test() public {
-        balances[msg.sender] = 21000000;        // Give the creator all initial tokens. 
-        totalSupply = 21000000;                        // Update total supply (1000 for example)
-        name = "Cryptocurrency 50 Test";                                       // Set the name for display purposes 
+    function C50Test2() public {
+        balances[msg.sender] = 2100000000000000000000000;        // Give the creator all initial tokens. 
+        totalSupply = 2100000000000000000000000;                        // Update total supply (1000 for example)
+        name = "Cryptocurrency 50 Test2";                                       // Set the name for display purposes 
         decimals = 18;                                               // Amount of decimals for display purposes
-        symbol = "C50Test";                                             // Set the symbol for display purposes
+        symbol = "C50Test2";                                             // Set the symbol for display purposes
         unitsOneEthCanBuy = 10;                                      // Set the price of your token for the ICO 
         fundsWallet = msg.sender;                                    // The owner of the contract gets ETH
     }
