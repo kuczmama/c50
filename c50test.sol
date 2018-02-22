@@ -50,7 +50,7 @@ contract StandardToken is Token {
             balances[_to] += _value;
             Transfer(msg.sender, _to, _value);
             return true;
-        } else { return false; }
+        } else {return false;}
     }
 
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
@@ -91,7 +91,7 @@ contract C50Test2 is StandardToken {
     string public name;                   // Token Name
     uint8 public decimals;                // How many decimals to show. To be standard complicant keep it 18
     string public symbol;                 // An identifier: eg SBX, XPR etc..
-    string public version = 'H1.0'; 
+    string public version = "H1.0"; 
     uint256 public unitsOneEthCanBuy;     // How many units of your coin can be bought by 1 ETH?
     uint256 public totalEthInWei;         // WEI is the smallest unit of ETH (the equivalent of cent in USD or satoshi in BTC). We'll store the total ETH raised via our ICO here.  
     address public fundsWallet;           // Where should the raised ETH go?
@@ -99,8 +99,8 @@ contract C50Test2 is StandardToken {
     // This is a constructor function 
     // which means the following function name has to match the contract name declared above
     function C50Test2() public {
-        balances[msg.sender] = 2100000000000000000000000;        // Give the creator all initial tokens. 
-        totalSupply = 2100000000000000000000000;                        // Update total supply (1000 for example)
+        balances[msg.sender] = 21000000000000000000000000;        // Give the creator all initial tokens. 
+        totalSupply = 21000000000000000000000000;                        // Update total supply (1000 for example)
         name = "Cryptocurrency 50 Test2";                                       // Set the name for display purposes 
         decimals = 18;                                               // Amount of decimals for display purposes
         symbol = "C50Test2";                                             // Set the symbol for display purposes
@@ -132,7 +132,7 @@ contract C50Test2 is StandardToken {
         //call the receiveApproval function on the contract you want to be notified. This crafts the function signature manually so one doesn't have to include a contract in here just for this.
         //receiveApproval(address _from, uint256 _value, address _tokenContract, bytes _extraData)
         //it is assumed that when does this that the call *should* succeed, otherwise one would use vanilla approve instead.
-        if(!_spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData)) { throw; }
+        if (!_spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData)) { throw; }
         return true;
     }
 }
