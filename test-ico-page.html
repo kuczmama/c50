@@ -137,7 +137,7 @@
     contract.functions.name().then((name) => document.getElementById('cryptocurreny-name').innerHTML = name);
 
     // Set Total Supply
-    contract.functions.totalSupply().then(supply => document.getElementById('total-supply-id').innerHTML = ethers.utils.formatEther(supply[0]))
+    contract.functions.totalSupply().then(supply => document.getElementById('total-supply-id').innerHTML = Number(ethers.utils.formatEther(supply[0])).toLocaleString())
     </script>
   </body>
 </html>
