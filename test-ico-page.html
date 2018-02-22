@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="ICO smart contract example">
 
-    <title>C50 Test Coin ICO</title>
+    <title name='coin-name'>Coin Name</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous" />
@@ -90,20 +90,20 @@
   <body>
     <div class="container">
       <div class="header clearfix">
-        <h3 class="text-muted">C50 Index Test Coin ICO</h3>
+        <h3 class="text-muted" span="coin-name">Coin Name</h3>
       </div>
 
       <div class="jumbotron">
-        <h1 class="display-5" id='cryptocurreny-name'>Loading Name...</h1>
-        <p class="lead"><strong>address</strong></p>
-        <h1 class="display-5">Total Raised</h1>
+        <h1 class="display-5" name='coin-name'>Loading Name...</h1>
+        <p class="lead" id='address-id'><strong>address</strong></p>
+        <h1 class="display-5" id='total-raised-id'>Total Raised</h1>
         <p class="lead"><strong id="amountRaised"></strong></p>
       </div>
 
       <div class="row marketing">
         <div class="col-lg-6">
           <h4>Price</h4>
-          <p>1 ETH = 10 C50Test</p>
+          <p>1 ETH = 10 <span name='coin-name'>Coin Name</span></p>
 
           <h4>Total Supply</h4>
           <p id='total-supply-id'>21,000,000</p>
@@ -133,11 +133,17 @@
     var address = "0x903cbf57e4e0800c285ea15c5e2e1541c7dff5c0";
     var provider = ethers.providers.getDefaultProvider('ropsten');
     var contract = new ethers.Contract(address, abi, provider);
-    // Set Name
-    contract.functions.name().then((name) => document.getElementById('cryptocurreny-name').innerHTML = name);
+
+    contract.functions.name().then((name) => {document.getElementsByName('coin-name').forEach(item => item.innerHTML = name);});
+    
+    // Set address
+    document.getElementById('address-id').innerHTML = address;
 
     // Set Total Supply
     contract.functions.totalSupply().then(supply => document.getElementById('total-supply-id').innerHTML = Number(ethers.utils.formatEther(supply[0])).toLocaleString())
+
+    // Set total amount raised
+    contract.functions.totalEthInWei().then(total => document.getElementById('amountRaised').innerHTML = Number(ethers.utils.formatEther(total[0]).toLocaleString()) + " ETH")
     </script>
   </body>
 </html>
