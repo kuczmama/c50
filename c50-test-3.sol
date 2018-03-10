@@ -12,13 +12,11 @@ pragma solidity ^0.4.18;
 // (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
 
-
 // ----------------------------------------------------------------------------
 // Safe maths
 // ----------------------------------------------------------------------------
 
 library SafeMath {
-
     function add(uint a, uint b) internal pure returns (uint c) {
         c = a + b;
         require(c >= a);
@@ -102,7 +100,7 @@ contract Owned {
 // ERC20 Token, with the addition of symbol, name and decimals and an
 // initial fixed supply
 // ----------------------------------------------------------------------------
-contract FixedSupplyToken is ERC20Interface, Owned {
+contract C50Test3 is ERC20Interface, Owned {
 
     using SafeMath for uint;
     string public symbol;
@@ -115,11 +113,11 @@ contract FixedSupplyToken is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-    function FixedSupplyToken() public {
-        symbol = "FIXED";
-        name = "Example Fixed Supply Token";
+    function C50Test3() public {
+        symbol = "C50Test3";
+        name = "C50 third test token";
         decimals = 18;
-        _totalSupply = 1000000 * 10**uint(decimals);
+        _totalSupply = 21000000 * 10**uint(decimals);
         balances[owner] = _totalSupply;
         Transfer(address(0), owner, _totalSupply);
     }
