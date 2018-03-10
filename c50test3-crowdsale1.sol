@@ -32,7 +32,7 @@ interface token {
     function transfer(address receiver, uint amount) external;
 }
 
-contract Crowdsale {
+contract C50Test3Crowdsale1 {
     using SafeMath for uint;
 
     address public beneficiary;
@@ -54,7 +54,7 @@ contract Crowdsale {
      * Setup the owner
      */
      //0x0f48ef66E2C57535654aA4257D75A1AB4B2086A0,10,1440,0.1,0xE0fF351a3aE0aa79abde627698F4D499d731DeBC
-    function Crowdsale(
+    function C50Test3Crowdsale1(
         address ifSuccessfulSendTo,
         uint fundingGoalInEthers,
         uint durationInMinutes,
