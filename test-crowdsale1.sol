@@ -1,11 +1,40 @@
 
 pragma solidity ^0.4.16;
 
+// ----------------------------------------------------------------------------
+// Safe maths
+// ----------------------------------------------------------------------------
+
+library SafeMath {
+    function add(uint a, uint b) internal pure returns (uint c) {
+        c = a + b;
+        require(c >= a);
+    }
+
+    function sub(uint a, uint b) internal pure returns (uint c) {
+        require(b <= a);
+        c = a - b;
+    }
+
+    function mul(uint a, uint b) internal pure returns (uint c) {
+        c = a * b;
+        require(a == 0 || c / a == b);
+    }
+
+    function div(uint a, uint b) internal pure returns (uint c) {
+        require(b > 0);
+        c = a / b;
+    }
+}
+
+
 interface token {
     function transfer(address receiver, uint amount);
 }
 
 contract Crowdsale {
+    using SafeMath for uint;
+
     address public beneficiary;
     uint public fundingGoal;
     uint public amountRaised;
@@ -46,10 +75,10 @@ contract Crowdsale {
     function () payable {
         require(!crowdsaleClosed);
         uint amount = msg.value;
-        balanceOf[msg.sender] += amount;
-        amountRaised += amount;
-        tokenReward.transfer(msg.sender, amount / price);
-        FundTransfer(msg.sender, amount, true);
+        balanceOf[msg.sender] = balanceOf[msg.sender].add(amount);
+        amountRaised = amountRaised.add(amount);
+        tokenReward.transfer(msg.sender, amount.div(price));
+        emit FundTransfer(msg.sender, amount, true);
     }
 
     modifier afterDeadline() { if (now >= deadline) _; }
@@ -62,7 +91,7 @@ contract Crowdsale {
     function checkGoalReached() afterDeadline {
         if (amountRaised >= fundingGoal){
             fundingGoalReached = true;
-            GoalReached(beneficiary, amountRaised);
+            emit GoalReached(beneficiary, amountRaised);
         }
         crowdsaleClosed = true;
     }
@@ -81,7 +110,7 @@ contract Crowdsale {
             balanceOf[msg.sender] = 0;
             if (amount > 0) {
                 if (msg.sender.send(amount)) {
-                    FundTransfer(msg.sender, amount, false);
+                    emit FundTransfer(msg.sender, amount, false);  // Log it to the blockchain
                 } else {
                     balanceOf[msg.sender] = amount;
                 }
@@ -90,7 +119,7 @@ contract Crowdsale {
 
         if (fundingGoalReached && beneficiary == msg.sender) {
             if (beneficiary.send(amountRaised)) {
-                FundTransfer(beneficiary, amountRaised, false);
+                emit FundTransfer(beneficiary, amountRaised, false);
             } else {
                 //If we fail to send the funds to beneficiary, unlock funders balance
                 fundingGoalReached = false;
