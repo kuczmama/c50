@@ -53,7 +53,7 @@ contract C50Test3Crowdsale1 {
      *
      * Setup the owner
      */
-     //0x0f48ef66E2C57535654aA4257D75A1AB4B2086A0,10,1440,0.1,0xE0fF351a3aE0aa79abde627698F4D499d731DeBC
+     //"0x0f48ef66E2C57535654aA4257D75A1AB4B2086A0",10,1440,0.1,"0xE0fF351a3aE0aa79abde627698F4D499d731DeBC"
     function C50Test3Crowdsale1(
         address ifSuccessfulSendTo,
         uint fundingGoalInEthers,
