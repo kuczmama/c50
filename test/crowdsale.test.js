@@ -5,18 +5,13 @@ require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should();
 
-const C50Test4 = artifacts.require('C50Test4.sol');
+const crowdsale = artifacts.require('Crowdsale.sol');
 
-contract('C50Test4', accounts => {
-  let c50Test4 = null;
-
-  const _name = 'C50 test token';
-  const _symbol = 'C50Test4';
-  const _decimals = 18;
-  const _totalSupply = 21000000
+contract('Crowdsale', accounts => {
+  let crowdsale = null;
 
   beforeEach(async function () {
-    c50Test4 = await C50Test4.new();
+    crowdsale = await crowdsale.new();
   });
 
   it('has a name', async function () {
