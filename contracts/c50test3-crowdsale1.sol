@@ -79,7 +79,7 @@ contract C50Test3Crowdsale1 {
         balanceOf[msg.sender] = balanceOf[msg.sender].add(amount);
         amountRaised = amountRaised.add(amount);
         tokenReward.transfer(msg.sender, amount.div(price));
-        emit FundTransfer(msg.sender, amount, true);
+        FundTransfer(msg.sender, amount, true);
     }
 
     modifier afterDeadline() { if (now >= deadline) _; }
@@ -92,7 +92,7 @@ contract C50Test3Crowdsale1 {
     function checkGoalReached() public afterDeadline {
         if (amountRaised >= fundingGoal){
             fundingGoalReached = true;
-            emit GoalReached(beneficiary, amountRaised);
+            GoalReached(beneficiary, amountRaised);
         }
         crowdsaleClosed = true;
     }
@@ -111,7 +111,7 @@ contract C50Test3Crowdsale1 {
             balanceOf[msg.sender] = 0;
             if (amount > 0) {
                 if (msg.sender.send(amount)) {
-                    emit FundTransfer(msg.sender, amount, false);  // Log it to the blockchain
+                    FundTransfer(msg.sender, amount, false);  // Log it to the blockchain
                 } else {
                     balanceOf[msg.sender] = amount;
                 }
@@ -120,7 +120,7 @@ contract C50Test3Crowdsale1 {
 
         if (fundingGoalReached && beneficiary == msg.sender) {
             if (beneficiary.send(amountRaised)) {
-                emit FundTransfer(beneficiary, amountRaised, false);
+                FundTransfer(beneficiary, amountRaised, false);
             } else {
                 //If we fail to send the funds to beneficiary, unlock funders balance
                 fundingGoalReached = false;
