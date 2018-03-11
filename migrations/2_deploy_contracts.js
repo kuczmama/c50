@@ -15,11 +15,15 @@ module.exports = function(deployer, network, accounts) {
 		.then(() => {
 			return deployer.deploy(Token);
 		}).then(() => {
+			function ether (n) {
+  				return new web3.BigNumber(web3.toWei(n, 'ether'));
+			}
+
 			const openingTime = new Date(Date.now() + duration.minutes(1)).getTime(); // Yesterday
 			const closingTime = openingTime + duration.weeks(1);
-		  	const rate = 6720;
+		  	const rate = new web3.BigNumber(6720);// / (10 ** 18);
 			const wallet = "0x5AEDA56215b167893e80B4fE645BA6d5Bab767DE";
-			const cap = 313 * 10 ** 18;
+			const cap = ether(313);//313 * 10 ** 18;
 
 			return deployer.deploy(Crowdsale, openingTime, closingTime, rate, wallet, cap, Token.address);
 		});
