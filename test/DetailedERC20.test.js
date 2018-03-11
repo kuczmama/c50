@@ -10,7 +10,7 @@ const C50Test4 = artifacts.require('C50Test4.sol');
 contract('C50Test4', accounts => {
   let c50Test4 = null;
 
-  const _name = 'C50 test token';
+  const _name = 'C50 fourth test token';
   const _symbol = 'C50Test4';
   const _decimals = 18;
   const _totalSupply = 21000000
