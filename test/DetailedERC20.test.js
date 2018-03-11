@@ -13,7 +13,7 @@ contract('C50Test4', accounts => {
   const _name = 'C50 fourth test token';
   const _symbol = 'C50Test4';
   const _decimals = 18;
-  const _totalSupply = 21000000
+  const _totalSupply = 21000000;
 
   beforeEach(async function () {
     c50Test4 = await C50Test4.new();

@@ -69,12 +69,17 @@ const crowdsale = artifacts.require('C50Test4Crowdsale');
 const c50Test4 = artifacts.require('C50Test4');
 
 contract('C50Test4Crowdsale', function ([_, owner, wallet, investor, purchaser]) {
-  const rate = new BigNumber(1);
-  const cap = ether(5);
-  const lessThanCap = ether(4);
+  const rate = new BigNumber(6720);
+  const cap = ether(313);
+  const lessThanCap = ether(312);
   const tokenSupply = new BigNumber('2.1e25');
   const value = ether(.1);
   const expectedTokenAmount = rate.mul(value);
+
+    before(async function () {
+      // Advance to the next block to correctly read time in the solidity "now" function interpreted by testrpc
+      await advanceBlock();
+    });
 
 
   beforeEach(async function () {
