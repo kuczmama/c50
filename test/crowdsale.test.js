@@ -65,10 +65,10 @@ require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should();
 
-const crowdsale = artifacts.require('C50Test4Crowdsale');
-const c50Test4 = artifacts.require('C50Test4');
+const crowdsale = artifacts.require('C50Crowdsale');
+const c50Test4 = artifacts.require('C50');
 
-contract('C50Test4Crowdsale', function ([_, owner, wallet, investor, purchaser]) {
+contract('C50Crowdsale', function ([_, owner, wallet, investor, purchaser]) {
   const rate = new BigNumber(6720);
   const cap = ether(313);
   const lessThanCap = ether(312);

@@ -1,9 +1,9 @@
-const C50Test4 = artifacts.require('C50Test4');
+const C50Test4 = artifacts.require('C50');
 const EVMRevert = 'revert';
 
 
 
-contract('C50Test4', function ([_, owner, recipient, anotherAccount]) {
+contract('C50', function ([_, owner, recipient, anotherAccount]) {
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
   const _name = 'Cryptocurrency 50 Index';

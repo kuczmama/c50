@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import './C50Test4.sol';
+import './C50.sol';
 import 'zeppelin-solidity/contracts/crowdsale/validation/TimedCrowdsale.sol';
 import 'zeppelin-solidity/contracts/crowdsale/validation/CappedCrowdsale.sol';
 
