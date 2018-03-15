@@ -6,8 +6,8 @@ const EVMRevert = 'revert';
 contract('C50Test4', function ([_, owner, recipient, anotherAccount]) {
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-  const _name = 'C50 fourth test token';
-  const _symbol = 'C50Test4';
+  const _name = 'Cryptocurrency 50 Index';
+  const _symbol = 'C50';
   const _decimals = 18;
   const _totalSupply = 21000000 * 10** _decimals
 
