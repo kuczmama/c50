@@ -1,5 +1,6 @@
 const Token = artifacts.require("./C50.sol");
-const Crowdsale = artifacts.require('./C50Crowdsale.sol');
+//const Crowdsale = artifacts.require('./C50Crowdsale.sol');
+const Crowdsale = artifacts.require('zeppelin-solidity/contracts/crowdsale/Crowdsale.sol');
 
 const duration = {
     seconds: function (val) { return val; },
@@ -21,16 +22,28 @@ module.exports = function(deployer, network, accounts) {
 
 			const openingTime = new Date(Date.now() + duration.minutes(1)).getTime(); // Yesterday
 			const closingTime = openingTime + duration.weeks(1);
-		  	const rate = new web3.BigNumber(6720);// / (10 ** 18);
+		  const rate = new web3.BigNumber(6720);// / (10 ** 18);
 			//const wallet = "0x5AEDA56215b167893e80B4fE645BA6d5Bab767DE";
-			const wallet = accounts[1];
+			const wallet = accounts[9];// This needs to be accounts[9] for some strange crazy reason...  It's the beneficiary
 			const cap = ether(313);//313 * 10 ** 18;
 
-			return deployer.deploy(Crowdsale, openingTime, closingTime, rate, wallet, cap, Token.address);
+      return deployer.deploy(Crowdsale, rate, wallet, Token.address);
+			//return deployer.deploy(Crowdsale, openingTime, closingTime, rate, wallet, cap, Token.address);
+
 		});
 		
 // 	});
 }
+
+// tokenAddress = "0xea92be96cb73163e64b2be075e3f0f70cf1cf87d";
+// crowdsaleAddress = "0x16c4a50a7e93c377f51801c31d8341e59c2ad251";
+// investor = web3.eth.accounts[4];
+// token = C50.at(tokenAddress);
+// //crowdsale = C50Crowdsale.at(crowdsaleAddress);
+// crowdsale = Crowdsale.at(crowdsaleAddress);
+// token.transfer(crowdsaleAddress, new web3.BigNumber('2.5e25'));
+// crowdsale.sendTransaction({ value: new web3.BigNumber(web3.toWei(1, 'ether')), from: investor});
+
 
 // Running migration: 1_initial_migration.js
 //   Deploying C50Test4...
