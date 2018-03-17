@@ -14,6 +14,7 @@ contract('C50Test4', accounts => {
   const _symbol = 'C50';
   const _decimals = 18;
   const _totalSupply = 21000000;
+  const _initialSupply = 2100000;
 
   beforeEach(async function () {
     c50Test4 = await C50Test4.new();
@@ -34,8 +35,8 @@ contract('C50Test4', accounts => {
     decimals.should.be.bignumber.equal(_decimals);
   });
 
-  it('has a total supply', async function () {
+  it('has an initial supply', async function () {
     const totalSupply = await c50Test4.totalSupply();
-    totalSupply.should.be.bignumber.equal(_totalSupply * 10**_decimals);
+    totalSupply.should.be.bignumber.equal(_initialSupply * 10**_decimals);
   });
 });

@@ -1,5 +1,6 @@
 const C50Test4 = artifacts.require('C50');
 const EVMRevert = 'revert';
+const BigNumber = web3.BigNumber;
 
 
 
@@ -9,17 +10,18 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
   const _name = 'Cryptocurrency 50 Index';
   const _symbol = 'C50';
   const _decimals = 18;
-  const _totalSupply = 21000000 * 10** _decimals
+  const _maxSupply = 21000000 * 10** _decimals;
+  const _initialSupply = 2100000 * 10** _decimals
 
   beforeEach(async function () {
     token = await C50Test4.new({from: owner});
   });
 
   describe('total supply', function () {
-    it('returns the total amount of tokens', async function () {
+    it('returns the total amount of initial tokens', async function () {
       const totalSupply = await token.totalSupply();
 
-      assert.equal(totalSupply, _totalSupply);
+      assert.equal(totalSupply, _initialSupply);
     });
   });
 
@@ -35,7 +37,80 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
     describe('when the requested account has some tokens', function () {
       it('returns the total amount of tokens', async function () {
         const balance = await token.balanceOf(owner);
-        assert.equal(balance, _totalSupply);
+        assert.equal(balance, _initialSupply);
+      });
+    });
+  });
+
+
+  describe('minting finished', function () {
+    describe('when the token is not finished', function () {
+      it('returns false', async function () {
+        const mintingFinished = await token.mintingFinished();
+        assert.equal(mintingFinished, false);
+      });
+    });
+
+    describe('when the token is finished', function () {
+      beforeEach(async function () {
+        await token.finishMinting({ from: owner });
+      });
+
+      it('returns true', async function () {
+        const mintingFinished = await token.mintingFinished.call();
+        assert.equal(mintingFinished, true);
+      });
+    });
+  });
+
+  describe('finish minting', function () {
+    describe('when the sender is the token owner', function () {
+      const from = owner;
+
+      describe('when the token was not finished', function () {
+        it('finishes token minting', async function () {
+          await token.finishMinting({ from });
+
+          const mintingFinished = await token.mintingFinished();
+          assert.equal(mintingFinished, true);
+        });
+
+        it('emits a mint finished event', async function () {
+          const { logs } = await token.finishMinting({ from });
+
+          assert.equal(logs.length, 1);
+          assert.equal(logs[0].event, 'MintFinished');
+        });
+      });
+
+      describe('when the token was already finished', function () {
+        beforeEach(async function () {
+          await token.finishMinting({ from });
+        });
+
+        it('reverts', async function () {
+          await token.finishMinting({ from }).should.be.rejectedWith(EVMRevert);
+        });
+      });
+    });
+
+    describe('when the sender is not the token owner', function () {
+      const from = anotherAccount;
+
+      describe('when the token was not finished', function () {
+        it('reverts', async function () {
+          await token.finishMinting({ from }).should.be.rejectedWith(EVMRevert);
+        });
+      });
+
+      describe('when the token was already finished', function () {
+        beforeEach(async function () {
+          await token.finishMinting({ from: owner });
+        });
+
+        it('reverts', async function () {
+          await token.finishMinting({ from }).should.be.rejectedWith(EVMRevert);
+        });
       });
     });
   });
@@ -54,7 +129,7 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
 
       describe('when the sender has enough balance', function () {
         it('transfers the requested amount', async function () {
-          let amount = 21000000 * 10 ** _decimals ;
+          let amount = 2100000 * 10 ** _decimals ;
           await token.transfer(to, amount, { from: owner });
 
           const senderBalance = await token.balanceOf(owner);
@@ -451,6 +526,79 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
         });
       });
     });
+
+  describe('mint', function () {
+    const amount = 100;
+
+    describe('when the sender is the token owner', function () {
+      const from = owner;
+
+      it("can't mint more than max supply", async function () {
+        let maxSupply = new BigNumber(_maxSupply);
+        let initialSupply = new BigNumber(_initialSupply);
+        let totalPossible = maxSupply.sub(initialSupply);
+
+        // More than the max supply should fail
+        await token.mint(owner, maxSupply.toNumber(), {from}).should.be.rejectedWith(EVMRevert);
+
+        // Equal to the max supply should succeed
+        await token.mint(owner, totalPossible.toNumber(), {from}).should.be.fulfilled;
+      });
+
+
+      describe('when the token was not finished', function () {
+        it('mints the requested amount', async function () {
+
+          const initialSupply = new BigNumber(_initialSupply);
+
+          await token.mint(owner, 100, { from });
+
+          const balance = await token.balanceOf(owner);
+          assert.equal(balance.sub(initialSupply).toString(10), '100');
+        });
+
+        it('emits a mint finished event', async function () {
+          const { logs } = await token.mint(owner, amount, { from });
+
+          assert.equal(logs.length, 2);
+          assert.equal(logs[0].event, 'Mint');
+          assert.equal(logs[0].args.to, owner);
+          assert.equal(logs[0].args.amount, amount);
+          assert.equal(logs[1].event, 'Transfer');
+        });
+      });
+
+      describe('when the token minting is finished', function () {
+        beforeEach(async function () {
+          await token.finishMinting({ from });
+        });
+
+        it('reverts', async function () {
+          await token.mint(owner, amount, { from }).should.be.rejectedWith(EVMRevert);
+        });
+      });
+    });
+
+    describe('when the sender is not the token owner', function () {
+      const from = anotherAccount;
+
+      describe('when the token was not finished', function () {
+        it('reverts', async function () {
+          await token.mint(owner, amount, { from }).should.be.rejectedWith(EVMRevert);
+        });
+      });
+
+      describe('when the token was already finished', function () {
+        beforeEach(async function () {
+          await token.finishMinting({ from: owner });
+        });
+
+        it('reverts', async function () {
+          await token.mint(owner, amount, { from }).should.be.rejectedWith(EVMRevert);
+        });
+      });
+    });
+  });
 
     describe('when the spender is the zero address', function () {
       const spender = ZERO_ADDRESS;

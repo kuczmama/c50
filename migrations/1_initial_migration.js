@@ -1,6 +1,6 @@
-const Token = artifacts.require("./C50.sol");
+const C50 = artifacts.require("./C50.sol");
 const Crowdsale = artifacts.require('./C50Crowdsale.sol');
 
 module.exports = function(deployer, network, accounts) {
-	return deployer.deploy(Token);
+	return deployer.deploy(C50);
 }

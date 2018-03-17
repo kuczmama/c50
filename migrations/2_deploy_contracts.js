@@ -1,61 +1,63 @@
-const Token = artifacts.require("./C50.sol");
-//const Crowdsale = artifacts.require('./C50Crowdsale.sol');
-const Crowdsale = artifacts.require('zeppelin-solidity/contracts/crowdsale/Crowdsale.sol');
-
-const duration = {
-    seconds: function (val) { return val; },
-    minutes: function (val) { return val * this.seconds(60); },
-    hours: function (val) { return val * this.minutes(60); },
-    days: function (val) { return val * this.hours(24); },
-    weeks: function (val) { return val * this.days(7); },
-    years: function (val) { return val * this.days(365); },
-};
+const C50 = artifacts.require('./C50.sol');
+const C50Crowdsale = artifacts.require('./C50Crowdsale.sol');
 
 module.exports = function(deployer, network, accounts) {
-	return deployer
-		.then(() => {
-			return deployer.deploy(Token);
-		}).then(() => {
-			function ether (n) {
-  				return new web3.BigNumber(web3.toWei(n, 'ether'));
-			}
+    const openingTime = web3.eth.getBlock('latest').timestamp + 2; // two secs in the future
+    const closingTime = openingTime + 86400 * 20; // 20 days
+    const rate = new web3.BigNumber(6720);
+    const cap = web3.toWei(313, "ether");
+    const wallet = accounts[1];
 
-			const openingTime = new Date(Date.now() + duration.minutes(1)).getTime(); // Yesterday
-			const closingTime = openingTime + duration.weeks(1);
-		  const rate = new web3.BigNumber(6720);// / (10 ** 18);
-			//const wallet = "0x5AEDA56215b167893e80B4fE645BA6d5Bab767DE";
-			const wallet = accounts[9];// This needs to be accounts[9] for some strange crazy reason...  It's the beneficiary
-			const cap = ether(313);//313 * 10 ** 18;
+    return deployer
+        .then(() => {
+            return deployer.deploy(C50);
+        })
+        .then(() => {
+            return deployer.deploy(
+                C50Crowdsale,
+                openingTime,
+                closingTime,
+                rate,
+                wallet,
+                cap,
+                C50.address
+            );
+        });
+};
+// // The account that will buy C50 tokens.
+// > purchaser = web3.eth.accounts[2]
+// '0xddac5d057c79facd674bc95dfd9104076fd34d6b'
+// // The address of the C50 token instance that was created when the crowdsale contract was deployed
+// // assign the result of C50Crowdsale.deployed() to the variable crowdsale
+// > C50Crowdsale.deployed().then(inst => { crowdsale = inst })
+// > undefined
+// > crowdsale.token().then(addr => { tokenAddress = addr } )
+// > tokenAddress
+// '0x87a784686ef69304ac0cb1fcb845e03c82f4ce16'
+// > C50Instance = C50.at(tokenAddress)
+// // change token ownership to crowdsale so it is able to mint tokens during crowdsale
+// > C50Instance.transferOwnership(crowdsale.address)
+// Now check the number of C50 tokens purchaser has. It should have 0
+// C50Instance.balanceOf(purchaser).then(balance => balance.toString(10))
+// '0'
+// // Buying C50 tokens
+// > C50Crowdsale.deployed().then(inst => inst.sendTransaction({ from: purchaser, value: web3.toWei(5, "ether")}))
+// { tx: '0x68aa48e1f0d0248835378caa1e5b2051be35a5ff1ded82878683e6072c0a0cfc',
+//   receipt:
+//    { transactionHash: '0x68aa48e1f0d0248835378caa1e5b2051be35a5ff1ded82878683e6072c0a0cfc',
+//      transactionIndex: 0,
+//      blockHash: '0xb48ceed99cf6ddd4f081a99474113c4c16ecf61f76625a6559f1686698ee7d57',
+//      blockNumber: 5,
+//      gasUsed: 68738,
+//      cumulativeGasUsed: 68738,
+//      contractAddress: null,
+//      logs: [] },
+//   logs: [] }
+// undefined
+// // Check the amount of C50 tokens for purchaser again. It should have some now.
+// > C50Instance.balanceOf(purchaser).then(balance => purchaserGusTokenBalance = balance.toString(10))
+// '5000000000000000000000'
+// // When we created our token we made it with 18 decimals, which the same as what ether has. That's a lot of zeros, let's display without the decimals:
+// > web3.fromWei(purchaserGusTokenBalance, "ether")
+// '5000'
 
-      return deployer.deploy(Crowdsale, rate, wallet, Token.address);
-			//return deployer.deploy(Crowdsale, openingTime, closingTime, rate, wallet, cap, Token.address);
-
-		});
-		
-// 	});
-}
-
-// tokenAddress = "0xea92be96cb73163e64b2be075e3f0f70cf1cf87d";
-// crowdsaleAddress = "0x16c4a50a7e93c377f51801c31d8341e59c2ad251";
-// investor = web3.eth.accounts[4];
-// token = C50.at(tokenAddress);
-// //crowdsale = C50Crowdsale.at(crowdsaleAddress);
-// crowdsale = Crowdsale.at(crowdsaleAddress);
-// token.transfer(crowdsaleAddress, new web3.BigNumber('2.5e25'));
-// crowdsale.sendTransaction({ value: new web3.BigNumber(web3.toWei(1, 'ether')), from: investor});
-
-
-// Running migration: 1_initial_migration.js
-//   Deploying C50Test4...
-//   ... 0x638916b003764303ab289225f3d5d9bed7f8716c56043df784f8c5a8d4a6db9c
-//   C50Test4: 0xa66eb22170656e9310a469c4ebfc63e9bb59d989
-// Saving artifacts...
-// Running migration: 2_deploy_contracts.js
-//   Running step...
-//   Replacing C50Test4...
-//   ... 0x92e813e89431e66f7124d1aefe73e4928236c54e77f20f16a66d1e1ace8a7c97
-//   C50Test4: 0x413bc643dfc9b3453020fa8a421fee7281ba09db
-//   Deploying C50Test4Crowdsale...
-//   ... 0x08b877fc8ca140c51efd5cc1013699b900afbe8183ddaae406350e104c384942
-//   C50Test4Crowdsale: 0x8fe68e3c58a02f557c3f34f53f6b16c712108696
-// Saving artifacts...
