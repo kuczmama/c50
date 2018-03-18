@@ -68,7 +68,7 @@ require('chai')
 const Crowdsale = artifacts.require('C50Crowdsale.sol');
 const Token = artifacts.require('C50.sol');
 
-contract('C50Crowdsale', function ([_, owner, wallet, investor, purchaser]) { 
+contract('C50Crowdsale', function ([_, owner, wallet, investor, purchaser, tokenWallet]) { 
   const rate = new BigNumber(6720);
   const cap = ether(313);
   const lessThanCap = ether(312);
@@ -81,7 +81,7 @@ contract('C50Crowdsale', function ([_, owner, wallet, investor, purchaser]) {
     this.closingTime = this.openingTime + duration.weeks(1);
     this.afterClosingTime = this.closingTime + duration.seconds(1);
     this.token = await Token.new();
-    this.crowdsale = await Crowdsale.new(this.openingTime, this.closingTime, rate, wallet, cap, this.token.address, { from: owner });
+    this.crowdsale = await Crowdsale.new(this.openingTime, this.closingTime, rate, wallet, cap, tokenWallet, this.token.address, { from: owner });
   });
 
   describe('full test', function() {
