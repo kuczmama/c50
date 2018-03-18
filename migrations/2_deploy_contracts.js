@@ -50,19 +50,14 @@ module.exports = function(deployer, network, accounts) {
         Promise.promisifyAll(web3.eth, { suffix: "Promise" })
     }
      web3.eth.getBlockPromise('latest').then(block => {
-        // console.log("latest block timestamp: " + latestBlock.timestamp);
-        // const openingTime = new Date(Date.now() + duration.minutes(1)).getTime(); // Yesterday
-        // const closingTime = openingTime + duration.weeks(1);
-        // const openingTime = web3.eth.getBlock('latest').timestamp + 2; // two secs in the future
         const openingTime = block.timestamp + duration.minutes(1); // two secs in the future
-        const closingTime = openingTime + duration.days(7); // 20 days
-        console.log("openingTime: " + openingTime);
-        console.log("closingTime: " + closingTime);
+        const closingTime = openingTime + duration.minutes(30); // 20 days
         // const tokenAddress = "0x3B6d55A76193544d163E72B1db8fAD2287b24f5A";
         const rate = new web3.BigNumber(6720);
         const cap = web3.toWei(313, "ether");
-        // const wallet = accounts[1];
-        const wallet = "0x0f48ef66E2C57535654aA4257D75A1AB4B2086A0";
+        const wallet = accounts[1];
+        // const wallet = "0x0f48ef66E2C57535654aA4257D75A1AB4B2086A0";
+        const tokenWallet = accounts[2];
 
         return deployer
             .then(() => {
@@ -76,29 +71,39 @@ module.exports = function(deployer, network, accounts) {
                     rate,
                     wallet,
                     cap,
+                    tokenWallet,
                     C50.address
                 );
             });
     });
 };
+
+//  token.approve(crowdsale.address, new web3.BigNumber('2.1e24'), { from: "0x992f045555f568d7022994f6f30373517127f13d" })
+//  crowdsale.then(inst => inst.sendTransaction({ from: purchaser, value: web3.toWei(1, "ether")}))
+
 // // The account that will buy C50 tokens.
+// crowdsale = C50Crowdsale.at("0x1e062e011137ec5f66232eb97b0cdb98a9671f27")
 // > purchaser = web3.eth.accounts[2]
 // '0xddac5d057c79facd674bc95dfd9104076fd34d6b'
 // // The address of the C50 token instance that was created when the crowdsale contract was deployed
 // // assign the result of C50Crowdsale.deployed() to the variable crowdsale
-// > C50Crowdsale.deployed().then(inst => { crowdsale = inst })
+// > crowdsale = C50Crowdsale.at(crowdsaleAddress);
 // > undefined
 // > crowdsale.token().then(addr => { tokenAddress = addr } )
 // > tokenAddress
 // '0x87a784686ef69304ac0cb1fcb845e03c82f4ce16'
-// > C50Instance = C50.at(tokenAddress)
-// // change token ownership to crowdsale so it is able to mint tokens during crowdsale
-// > C50Instance.transferOwnership(crowdsale.address)
-// Now check the number of C50 tokens purchaser has. It should have 0
-// C50Instance.balanceOf(purchaser).then(balance => balance.toString(10))
+// > token = C50.at(tokenAddress)
+// tokenWallet = crowdsale.tokenWallet();
+// Increase approval of crowdsale
+// crowdsale = C50Crowdsale.at("0x1e062e011137ec5f66232eb97b0cdb98a9671f27")
+// token.increaseApproval(tokenWallet, new web3.BigNumber('2.1e24'));
+// token.increaseApproval(crowdsaleAddress, new web3.BigNumber('2.1e24'))
+// token.transfer(tokenWallet, new web3.BigNumber('2.4e24'));
+// token.balanceOf(purchaser).then(balance => balance.toString(10))
 // '0'
 // // Buying C50 tokens
-// > C50Crowdsale.deployed().then(inst => inst.sendTransaction({ from: purchaser, value: web3.toWei(1, "ether")}))
+// token.increaseApproval("0x992f045555f568d7022994f6f30373517127f13d", new web3.BigNumber('2.4e24'))
+// > crowdsale.then(inst => inst.sendTransaction({ from: purchaser, value: web3.toWei(1, "ether")}))
 // { tx: '0x68aa48e1f0d0248835378caa1e5b2051be35a5ff1ded82878683e6072c0a0cfc',
 //   receipt:
 //    { transactionHash: '0x68aa48e1f0d0248835378caa1e5b2051be35a5ff1ded82878683e6072c0a0cfc',
@@ -112,7 +117,7 @@ module.exports = function(deployer, network, accounts) {
 //   logs: [] }
 // undefined
 // // Check the amount of C50 tokens for purchaser again. It should have some now.
-// > C50Instance.balanceOf(purchaser).then(balance => purchaserGusTokenBalance = balance.toString(10))
+// > token.balanceOf(purchaser).then(balance => purchaserGusTokenBalance = balance.toString(10))
 // '5000000000000000000000'
 // // When we created our token we made it with 18 decimals, which the same as what ether has. That's a lot of zeros, let's display without the decimals:
 // > web3.fromWei(purchaserGusTokenBalance, "ether")
