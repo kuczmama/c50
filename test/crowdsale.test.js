@@ -66,21 +66,22 @@ require('chai')
   .should();
 
 const Crowdsale = artifacts.require('C50Crowdsale.sol');
-const Token = artifacts.require('C50.sol');
+const C50 = artifacts.require('C50');
 
 contract('C50Crowdsale', function ([_, owner, wallet, investor, purchaser, tokenWallet]) { 
   const rate = new BigNumber(6720);
   const cap = ether(313);
   const lessThanCap = ether(312);
-  const initialSupply = new BigNumber('2.1e24');
+  const maxSupply = new BigNumber('2.1e25');
   const value = ether(1);
+  const crowdsaleAmount = new web3.BigNumber('2.1e24');
   const expectedTokenAmount = rate.mul(value);
 
   beforeEach(async function () {
     this.openingTime = latestTime() + duration.weeks(1);
     this.closingTime = this.openingTime + duration.weeks(1);
     this.afterClosingTime = this.closingTime + duration.seconds(1);
-    this.token = await Token.new();
+    this.token = await C50.new({from: owner});
     this.crowdsale = await Crowdsale.new(this.openingTime, this.closingTime, rate, wallet, cap, tokenWallet, this.token.address, { from: owner });
   });
 
@@ -92,35 +93,36 @@ contract('C50Crowdsale', function ([_, owner, wallet, investor, purchaser, token
 
       let investorPreEth = web3.eth.getBalance(investor);
 
-      // totalSupply = initialSupply
-      let currentSupply = await this.token.totalSupply();
-      currentSupply.should.be.bignumber.equal(initialSupply);
 
       const walletBefore = web3.eth.getBalance(wallet);
 
-      // Can't send until crowdsale is the owner of the token and time is started
+      let ownerBalance = await this.token.balanceOf(owner);
+      ownerBalance.should.be.bignumber.equal(maxSupply);
+
+      await this.token.transfer(tokenWallet, crowdsaleAmount, {from: owner});
+      let tokenWalletBalance = await this.token.balanceOf(tokenWallet);
+      tokenWalletBalance.should.be.bignumber.equal(crowdsaleAmount);
+
+      // Can't send until crowdsale is the owner of the token and time is started and the wallet has the money
       await this.crowdsale.sendTransaction({ value: value, from: investor }).should.be.rejectedWith(EVMRevert);
-      await this.token.transferOwnership(this.crowdsale.address);
+      await this.token.approve(this.crowdsale.address, crowdsaleAmount, { from: tokenWallet })
+
       await this.crowdsale.sendTransaction({ value: value, from: investor }).should.be.rejectedWith(EVMRevert);
       await increaseTimeTo(this.openingTime);
 
       await this.crowdsale.sendTransaction({ from: investor, value: value }).should.be.fulfilled;
 
-      // Wallet is increased by the value of ether
+      // // Wallet is increased by the value of ether
       let walletAfter = web3.eth.getBalance(wallet);
       walletAfter.minus(walletBefore).should.be.bignumber.equal(value);
 
-      // token.totalSupply = initialSupply + (value * rate)
-      currentSupply = await this.token.totalSupply();
-      currentSupply.should.be.bignumber.equal(initialSupply.add(value.mul(rate)));
-
-      // Investor should increase tokens by val * rate
+      // // Investor should increase tokens by val * rate
       let investorSupply = await this.token.balanceOf(investor);
       investorSupply.should.be.bignumber.equal(value.mul(rate));
 
 
-      // If cap is reached crowdsale can't receive any more
-      // When crowdsale ends, no more can be sent
+      // // If cap is reached crowdsale can't receive any more
+      // // When crowdsale ends, no more can be sent
       await increaseTimeTo(this.afterClosingTime);
       await this.crowdsale.sendTransaction({ value: value, from: investor }).should.be.rejectedWith(EVMRevert);
     })

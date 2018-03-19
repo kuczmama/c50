@@ -1,4 +1,4 @@
-const C50Test4 = artifacts.require('C50');
+const C50 = artifacts.require('C50');
 const EVMRevert = 'revert';
 const BigNumber = web3.BigNumber;
 
@@ -14,7 +14,7 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
   const _initialSupply = 2100000 * 10** _decimals
 
   beforeEach(async function () {
-    token = await C50Test4.new({from: owner});
+    token = await C50.new({from: owner});
   });
 
   describe('total supply', function () {
