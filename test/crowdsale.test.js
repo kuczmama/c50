@@ -139,7 +139,8 @@ contract('C50Crowdsale', function ([_, owner, wallet, investor, purchaser, token
 
     describe('accepting payments', function () {
       beforeEach(async function () {
-        await this.token.transferOwnership(this.crowdsale.address);
+          await this.token.approve(this.crowdsale.address, crowdsaleAmount, { from: tokenWallet })
+          await this.token.transfer(tokenWallet, crowdsaleAmount, {from: owner});
       });
       it('should reject payments before start', async function () {
         await this.crowdsale.sendTransaction({ value: value, from: investor }).should.be.rejectedWith(EVMRevert);
@@ -160,95 +161,10 @@ contract('C50Crowdsale', function ([_, owner, wallet, investor, purchaser, token
     });
   });
 
-
-
-
-  // describe('creating a valid crowdsale', function () {
-  //   it('should fail with zero cap', async function () {
-  //     await crowdsale.new(
-  //       this.openingTime, this.closingTime, rate, wallet, 0, this.token.address, { from: owner }
-  //     ).should.be.rejectedWith(EVMRevert);
-  //   });
-  // });
-
-  // describe('timed crowdsale', function() {
-  //   it('should be ended only after end', async function () {
-  //     let ended = await this.crowdsale.hasClosed();
-  //     ended.should.equal(false);
-  //     await increaseTimeTo(this.afterClosingTime);
-  //     ended = await this.crowdsale.hasClosed();
-  //     ended.should.equal(true);
-  //   });
-
-  //   describe('accepting payments', function () {
-  //     it('should reject payments before start', async function () {
-  //       await this.crowdsale.sendTransaction({ value: value, from: investor }).should.be.rejectedWith(EVMRevert);
-  //       await this.crowdsale.buyTokens(investor, { from: purchaser, value: value }).should.be.rejectedWith(EVMRevert);
-  //     });
-
-  //     it('should accept payments after start', async function () {
-  //       await increaseTimeTo(this.openingTime);
-  //       await this.crowdsale.sendTransaction({ value: value, from: investor }).should.be.fulfilled;
-  //       await this.crowdsale.buyTokens(investor, { value: value, from: purchaser }).should.be.fulfilled;
-  //     });
-
-  //     it('should reject payments after end', async function () {
-  //       await increaseTimeTo(this.afterClosingTime);
-  //       await this.crowdsale.sendTransaction({ value: value, from: investor }).should.be.rejectedWith(EVMRevert);
-  //       await this.crowdsale.buyTokens(investor, { value: value, from: purchaser }).should.be.rejectedWith(EVMRevert);
-  //     });
-  //   });
-  // });
-
-  // describe('capped crowdsale', function() {
-  //   describe('accepting payments', function () {
-  //     it('should accept payments within cap', async function () {
-  //       await increaseTimeTo(this.openingTime);
-  //       await this.crowdsale.sendTransaction({ value: cap.minus(lessThanCap), from: investor }).should.be.fulfilled;;
-  //       await this.crowdsale.sendTransaction({ value: lessThanCap, from: investor }).should.be.fulfilled;;
-  //     });
-
-  //     it('should reject payments outside cap', async function () {
-  //       await increaseTimeTo(this.openingTime);
-  //       await this.crowdsale.sendTransaction({ value: cap, from: investor });
-  //       await this.crowdsale.sendTransaction({ value: value, from: investor }).should.be.rejectedWith(EVMRevert);
-  //     });
-
-  //     it('should reject payments that exceed cap', async function () {
-  //       await this.crowdsale.sendTransaction({value: cap.plus(1), from: investor}).should.be.rejectedWith(EVMRevert);
-  //     });
-  //   });
-
-  //   describe('ending', function () {
-  //     it('should not reach cap if sent under cap', async function () {
-  //       await increaseTimeTo(this.openingTime);
-  //       let capReached = await this.crowdsale.capReached();
-  //       capReached.should.equal(false);
-  //       await this.crowdsale.sendTransaction({value: lessThanCap, from: investor});
-  //       capReached = await this.crowdsale.capReached();
-  //       capReached.should.equal(false);
-  //     });
-
-  //     it('should not reach cap if sent just under cap', async function () {
-  //       await increaseTimeTo(this.openingTime);
-  //       await this.crowdsale.sendTransaction({value: cap.minus(1), from: investor});
-  //       let capReached = await this.crowdsale.capReached();
-  //       capReached.should.equal(false);
-  //     });
-
-  //     it('should reach cap if cap sent', async function () {
-  //       await increaseTimeTo(this.openingTime);
-  //       await this.crowdsale.sendTransaction({value: cap, from: investor});
-  //       let capReached = await this.crowdsale.capReached();
-  //       capReached.should.equal(true);
-  //     });
-
-  //   });
-  // });
-
   describe('Basic crowdsale', function () {
     beforeEach(async function () {
-      await this.token.transferOwnership(this.crowdsale.address);
+      await this.token.approve(this.crowdsale.address, crowdsaleAmount, { from: tokenWallet })
+      await this.token.transfer(tokenWallet, crowdsaleAmount, {from: owner});
       // Advance to the next block to correctly read time in the solidity "now" function interpreted by testrpc
       await advanceBlock();
     });
