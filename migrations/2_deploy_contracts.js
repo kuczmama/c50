@@ -32,6 +32,7 @@ const duration = {
 
 module.exports = function(deployer, network, accounts) {
     let web3;
+
     if (network == 'development') {
         const {
           host,
@@ -39,6 +40,8 @@ module.exports = function(deployer, network, accounts) {
         } = config.networks[network]
         web3 = new Web3(new Web3.providers.HttpProvider('http://'+host+':'+port))
     } else if (network == 'ropsten') {
+        web3 = new Web3(config.networks[network].provider);
+    } else if (network == 'mainnet') {
         web3 = new Web3(config.networks[network].provider);
     } else {
         console.log('We are only able to deploy to a local dev network.')
@@ -55,26 +58,34 @@ module.exports = function(deployer, network, accounts) {
         // const tokenAddress = "0x3B6d55A76193544d163E72B1db8fAD2287b24f5A";
         const rate = new web3.BigNumber(6720);
         const cap = web3.toWei(313, "ether");
-        const wallet = accounts[1];
+        // const wallet = accounts[1];
         // const wallet = "0x0f48ef66E2C57535654aA4257D75A1AB4B2086A0";
-        const tokenWallet = accounts[2];
+        // const tokenWallet = accounts[2];
+        const wallet = "0x0f48ef66E2C57535654aA4257D75A1AB4B2086A0";
+        const tokenWallet = "0x0f48ef66E2C57535654aA4257D75A1AB4B2086A0";
+        const crowdsaleAmount = new web3.BigNumber('2.1e24');
 
         return deployer
             .then(() => {
                 return deployer.deploy(C50);
             })
-            .then(() => {
-                return deployer.deploy(
-                    C50Crowdsale,
-                    openingTime,
-                    closingTime,
-                    rate,
-                    wallet,
-                    cap,
-                    tokenWallet,
-                    C50.address
-                );
-            });
+            // .then( async () => {
+            //     let crowdsale = deployer.deploy(
+            //         C50Crowdsale,
+            //         openingTime,
+            //         closingTime,
+            //         rate,
+            //         wallet,
+            //         cap,
+            //         tokenWallet,
+            //         C50.address
+            //     );
+
+            //     // await this.token.transfer(tokenWallet, crowdsaleAmount, {from: owner});
+
+            //     return crowdsale;
+
+            // });
     });
 };
 

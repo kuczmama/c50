@@ -1,8 +1,8 @@
 // Allows us to use ES6 in our migrations and tests.
 require('babel-register')
 let HDWalletProvider = require("truffle-hdwallet-provider");
-let mnemonic = "syrup decrease pact nerve hedgehog law ostrich rug toddler clever ranch taxi";
-var infura_apikey = "KbQuP7xkP1ZYNhJkUOXF"; 
+let mnemonic = "penalty give notable mammal ready happy clarify artwork immense powder legend sadness";
+var infura_apikey = "7dzkhERjQJsad7aNgAHw"; 
 
 module.exports = {
   networks: {
@@ -15,7 +15,12 @@ module.exports = {
       provider: new HDWalletProvider(mnemonic, "https://ropsten.infura.io/" + infura_apikey),
       network_id: 3,
       gas: 4500000
-	}
+	},
+    mainnet: {
+      provider: new HDWalletProvider(mnemonic, "https://mainnet.infura.io/" + infura_apikey),
+      network_id: 4,
+      gas: 450000,
+    }
   },
   solc: {
     optimizer: {
