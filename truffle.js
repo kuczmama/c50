@@ -17,6 +17,7 @@ module.exports = {
       gas: 4500000
 	},
     mainnet: {
+      // https://infura.io/setup?key=7dzkhERjQJsad7aNgAHw
       provider: new HDWalletProvider(mnemonic, "https://mainnet.infura.io/" + infura_apikey),
       network_id: 4,
       gas: 450000,
