@@ -3,7 +3,7 @@ pragma solidity 0.4.19;
 import 'zeppelin-solidity/contracts/token/ERC20/MintableToken.sol';
 import 'zeppelin-solidity/contracts/lifecycle/Pausable.sol'
 
-contract C50 is MintableToken, Ownable, Pausable {
+contract C50V2 is MintableToken, Ownable, Pausable {
     string public name = "Cryptocurrency 50 Index";
     string public symbol = "C50";
     uint8 public decimals = 18;
@@ -11,13 +11,15 @@ contract C50 is MintableToken, Ownable, Pausable {
     uint256 public constant MAX_SUPPLY = 250000000000 * (10 ** uint256(18));
     uint256 public rate; // How many token units a buyer gets per wei
     event SetRate();
+    event SetWallet();
     address public wallet;  // Address where funds are collected
 
 
-    function C50Mintable() public {
+    function C50V2() public {
     	totalSupply_ = INITIAL_SUPPLY;
     	balances[msg.sender] = INITIAL_SUPPLY;
       rate = 500;
+      wallet = msg.sender;
     	Transfer(0x0, msg.sender, INITIAL_SUPPLY);
     }
 
@@ -37,28 +39,29 @@ contract C50 is MintableToken, Ownable, Pausable {
     return true;
   }
 
-  function setRate(uint256 _rate) onlyOwner  public {
+
+  function setWallet(address _wallet) onlyOwner whenNotPaused public {
+    require(_wallet != address(0));
+    wallet = _wallet;
+    SetWallet(wallet);
+  }
+
+  function setRate(uint256 _rate) onlyOwner whenNotPaused public {
     require(_rate > 0);
     rate = _rate;
     SetRate(rate);
   }
 
-    /**
-   * @dev fallback function ***DO NOT OVERRIDE***
-   */
+  //Fallback function
   function () external payable {
     buyTokens(msg.sender);
   }
 
-  /**
-   * @dev low level token purchase ***DO NOT OVERRIDE***
-   * @param _beneficiary Address performing the token purchase
-   */
-  function buyTokens(address _beneficiary) public payable {
+  function buyTokens(address _beneficiary) whenNotPaused public payable {
     uint256 weiAmount = msg.value;
     require(_beneficiary != address(0));
     require(_weiAmount != 0);
-    // TODO: Add More validation https://github.com/ethereum/wiki/wiki/Safety
+    require(weiAmount > 0);
 
     // calculate token amount to be created
     uint256 tokens = _weiAmount.mul(rate);
@@ -66,8 +69,9 @@ contract C50 is MintableToken, Ownable, Pausable {
     // update state
     weiRaised = weiRaised.add(weiAmount);
 
-    TokenPurchase(msg.sender, _beneficiary, weiAmount, tokens);
     require(mint(_beneficiary, _tokenAmount));
-  }
+    TokenPurchase(msg.sender, _beneficiary, weiAmount, tokens);
 
+    wallet.transfer(msg.value);
+  }
 }

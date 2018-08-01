@@ -1,4 +1,4 @@
-const C50 = artifacts.require('C50');
+const C50 = artifacts.require('C50V2');
 const EVMRevert = 'revert';
 const BigNumber = web3.BigNumber;
 
@@ -10,8 +10,8 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
   const _name = 'Cryptocurrency 50 Index';
   const _symbol = 'C50';
   const _decimals = 18;
-  const _maxSupply = 250000000000 * (10 ** uint256(18));
-  const _initialSupply = 1000000 * (10 ** uint256(18));
+  const _maxSupply = 21000000 * 10** _decimals;
+  const _initialSupply = 2100000 * 10** _decimals
 
   beforeEach(async function () {
     token = await C50.new({from: owner});
