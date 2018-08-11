@@ -1,4 +1,4 @@
-# What is C50?
+# 50 Cryptos in 1 - Buy 1 own them all
 
 <img align="right" src="http://www.c50index.com/wp-content/uploads/2018/05/c50-finallogo2b1-1-e1526222711779-206x300.png" alt="c50 Index">
 
