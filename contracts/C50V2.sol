@@ -82,11 +82,11 @@ contract C50V2 is MintableToken, Pausable {
   function buyTokens(address _beneficiary) whenNotPaused public payable {
     uint256 _weiAmount = msg.value;
     require(_beneficiary != address(0));
-    require(_weiAmount != 0);
     require(_weiAmount > 0);
 
     // calculate token amount to be created
     uint256 _tokenAmount = _weiAmount.mul(rate);
+    
 
     // update state
     weiRaised = weiRaised.add(_weiAmount);
