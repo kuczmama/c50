@@ -10,14 +10,14 @@ require('chai')
 
 
 
-contract('C50', function ([_, owner, recipient, anotherAccount]) {
+contract('C50V2', function ([_, owner, recipient, anotherAccount]) {
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
   const _name = 'Cryptocurrency 50 Index';
   const _symbol = 'C50';
   const _decimals = 18;
   const _maxSupply = 250000000000 * 10** _decimals;
-  const _initialSupply = 1000000 * 10** _decimals
+  const _initialSupply = 10000000 * 10** _decimals
 
   beforeEach(async function () {
     token = await C50.new({from: owner});
@@ -25,7 +25,7 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
 
   describe('total supply', function () {
     it('returns the total amount of initial tokens', async function () {
-      const totalSupply = await token.totalSupply();
+      const totalSupply = await token.maxSupply();
       assert.equal(totalSupply.toNumber(), _initialSupply);
     });
   });

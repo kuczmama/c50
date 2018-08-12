@@ -4,12 +4,15 @@
 // let mnemonic = "engine slight photo empower correct modify rib sea raise knock artwork security";
 // var infura_apikey = "7dzkhERjQJsad7aNgAHw"; 
 
+//https://truffleframework.com/docs/truffle/reference/configuration
 module.exports = {
   networks: {
     development: {
       host: '127.0.0.1',
-      port: 8545,
-      network_id: '*' // Match any network id
+      port: 7545,
+      network_id: '*', // Match any network id
+      gas: 4500000,
+      gasPrice: 2500000000, //  Default is 100,000,000,000 (100 Shannon).
     },
  //    ropsten: {
  //      provider: new HDWalletProvider(mnemonic, "https://ropsten.infura.io/" + infura_apikey),

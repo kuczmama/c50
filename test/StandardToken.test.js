@@ -1,6 +1,12 @@
-const C50 = artifacts.require('C50');
+const C50 = artifacts.require('C50V2');
 const EVMRevert = 'revert';
 const BigNumber = web3.BigNumber;
+
+require('chai')
+  .use(require('chai-as-promised'))
+  .use(require('chai-bignumber')(BigNumber))
+  .should();
+
 
 
 
@@ -10,8 +16,8 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
   const _name = 'Cryptocurrency 50 Index';
   const _symbol = 'C50';
   const _decimals = 18;
-  const _maxSupply = 250000000000 * (10 ** uint256(18));
-  const _initialSupply = 1000000 * (10 ** uint256(18));
+  const _maxSupply = 250000000000 * 10 ** _decimals;
+  const _initialSupply = 10000000 * (10 ** _decimals);
 
   beforeEach(async function () {
     token = await C50.new({from: owner});
@@ -20,8 +26,7 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
   describe('total supply', function () {
     it('returns the total amount of initial tokens', async function () {
       const totalSupply = await token.totalSupply();
-
-      assert.equal(totalSupply, _maxSupply);
+      assert.equal(totalSupply.toNumber(), _initialSupply);
     });
   });
 
@@ -37,7 +42,7 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
     describe('when the requested account has some tokens', function () {
       it('returns the total amount of tokens', async function () {
         const balance = await token.balanceOf(owner);
-        assert.equal(balance, _maxSupply);
+        assert.equal(balance.toNumber(), _initialSupply);
       });
     });
   });
@@ -57,14 +62,13 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
 
       describe('when the sender has enough balance', function () {
         it('transfers the requested amount', async function () {
-          let amount = 21000000 * 10 ** _decimals ;
-          await token.transfer(to, amount, { from: owner });
+          await token.transfer(to, _initialSupply, { from: owner });
 
           const senderBalance = await token.balanceOf(owner);
           assert.equal(senderBalance, 0);
 
           const recipientBalance = await token.balanceOf(to);
-          assert.equal(recipientBalance, amount);
+          assert.equal(recipientBalance, _initialSupply);
         });
 
         it('emits a transfer event', async function () {
@@ -202,17 +206,6 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
 
         describe('when the owner has enough balance', function () {
           const amount = 100;
-
-          // it('transfers the requested amount', async function () {
-          //   let transactionAmount = 21000000 * 10 ** _decimals ;
-          //   await token.transferFrom(owner, to, transactionAmount, { from: spender });
-
-          //   const senderBalance = await token.balanceOf(owner);
-          //   assert.equal(senderBalance, 0);
-
-          //   const recipientBalance = await token.balanceOf(to);
-          //   assert.equal(recipientBalance, transactionAmount);
-          // });
 
           it('decreases the spender allowance', async function () {
             await token.transferFrom(owner, to, amount, { from: spender });

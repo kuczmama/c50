@@ -7,7 +7,7 @@ contract C50V2 is MintableToken, Pausable {
     string public name = "Cryptocurrency 50 Index";
     string public symbol = "C50";
     uint8 public decimals = 18;
-    uint256 public constant INITIAL_SUPPLY = 1000000 * (10 ** uint256(18));
+    uint256 public constant INITIAL_SUPPLY = 10000000 * (10 ** uint256(18));
     uint256 public constant MAX_SUPPLY = 250000000000 * (10 ** uint256(18));
     uint256 public rate; // How many token units a buyer gets per wei
     address public wallet;  // Address where funds are collected
