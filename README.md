@@ -19,3 +19,9 @@ Criteria
 - Not backed by other financial instruments
 - Not an index of coins or tokens
 
+## Testing
+```sh
+export PATH=$(dirname $(nodenv which npm)):$PATH; node --inspect-brk $(which truffle) test test/C50V2.test.js
+chrome://inspect/
+```
+
