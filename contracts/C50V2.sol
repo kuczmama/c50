@@ -11,31 +11,10 @@ contract C50V2 is MintableToken, Pausable {
     uint256 public constant MAX_SUPPLY = 250000000000 * (10 ** uint256(18));
     uint256 public rate; // How many token units a buyer gets per wei
     address public wallet;  // Address where funds are collected
-    // Amount of wei raised
-    uint256 public weiRaised;
+    uint256 public weiRaised; // Amount of wei raised
 
 
-    // TODO look into indexed
-   /**
-    * Event for setting the wallet
-    * @param wallet wallet to receive tokens
-    *
-    */
-    event SetWallet(
-      address wallet
-    );
-
-    /**
-     * Event to set the rate
-     * @param rate c50 to ethereum
-     *
-    **/
-    event SetRate(
-      uint256 rate
-    );
-
-
-   /**
+  /**
    * Event for token purchase logging
    * @param purchaser who paid for the tokens
    * @param beneficiary who got the tokens
@@ -50,15 +29,32 @@ contract C50V2 is MintableToken, Pausable {
   );
 
 
+  /**
+   * Event for setting the wallet
+   * @param wallet wallet to receive tokens
+   */
+  event SetWallet(
+    address wallet
+  );
 
 
-    constructor() public {
-    	totalSupply_ = INITIAL_SUPPLY;
-    	balances[msg.sender] = INITIAL_SUPPLY;
-      rate = 500;
-      wallet = msg.sender;
-    	emit Transfer(0x0, msg.sender, INITIAL_SUPPLY);
-    }
+  /**
+   * Event to set the rate
+   * @param rate c50 to ethereum
+   **/
+  event SetRate(
+    uint256 indexed rate
+  );
+
+
+  constructor() public {
+    totalSupply_ = INITIAL_SUPPLY;
+    balances[msg.sender] = INITIAL_SUPPLY;
+    rate = 500;
+    wallet = msg.sender;
+    emit Transfer(0x0, msg.sender, INITIAL_SUPPLY);
+  }
+ 
 
    /**
    * @dev Function to mint tokens
@@ -77,22 +73,11 @@ contract C50V2 is MintableToken, Pausable {
   }
 
 
-  function setWallet(address _wallet) onlyOwner whenNotPaused public {
-    require(_wallet != address(0));
-    wallet = _wallet;
-    emit SetWallet(wallet);
-  }
-
-  function setRate(uint256 _rate) onlyOwner whenNotPaused public {
-    require(_rate > 0);
-    rate = _rate;
-    emit SetRate(rate);
-  }
-
   //Fallback function
   function () external payable {
     buyTokens(msg.sender);
   }
+
 
   function buyTokens(address _beneficiary) whenNotPaused public payable {
     uint256 _weiAmount = msg.value;
@@ -110,5 +95,19 @@ contract C50V2 is MintableToken, Pausable {
     emit TokenPurchase(msg.sender, _beneficiary, _weiAmount, _tokenAmount);
 
     wallet.transfer(msg.value);
+  }
+
+
+  function setWallet(address _wallet) onlyOwner whenNotPaused public {
+    require(_wallet != address(0));
+    wallet = _wallet;
+    emit SetWallet(wallet);
+  }
+
+
+  function setRate(uint256 _rate) onlyOwner whenNotPaused public {
+    require(_rate > 0);
+    rate = _rate;
+    emit SetRate(rate);
   }
 }

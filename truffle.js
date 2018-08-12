@@ -1,7 +1,7 @@
 // Allows us to use ES6 in our migrations and tests.
-require('babel-register')
+// require('babel-register')
 // let HDWalletProvider = require("truffle-hdwallet-provider");
-// let mnemonic = "penalty give notable mammal ready happy clarify artwork immense powder legend sadness";
+// let mnemonic = "engine slight photo empower correct modify rib sea raise knock artwork security";
 // var infura_apikey = "7dzkhERjQJsad7aNgAHw"; 
 
 module.exports = {
