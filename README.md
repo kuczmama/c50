@@ -25,3 +25,47 @@ export PATH=$(dirname $(nodenv which npm)):$PATH; node --inspect-brk $(which tru
 chrome://inspect/
 ```
 
+
+## How to deploy c50
+
+1. Update owner address in 1_initial_migration.js
+       const C50 = artifacts.require("./C50V2.sol");
+
+```js       
+       module.exports = function(deployer, network, accounts) {
+       	return deployer.deploy(C50, {from: "0x20684DacBDf92A919b2C0820A2E51a0C29c266aE"});
+       }
+```
+
+2. Run the command
+
+```sh
+    truffle migrate --network development
+```
+
+1. Check to make sure it works.  Also set the gasPrice to gasPrice: 2500000000
+
+```js
+    module.exports = {
+      networks: {
+        development: {
+          host: '127.0.0.1',
+          port: 7545,
+          network_id: '*', // Match any network id
+          gas: 4500000,
+          gasPrice: 2500000000, //  Default is 100,000,000,000 (100 Shannon).
+        },
+        ropsten: {
+          provider: new HDWalletProvider(mnemonic, "https://ropsten.infura.io/" + infura_apikey),
+          network_id: 3,
+          gas: 4500000
+          gasPrice: 2500000000
+    	},
+        mainnet: {
+          provider: new HDWalletProvider(mnemonic, "https://mainnet.infura.io/" + infura_apikey),
+          network_id: 4,
+          gas: 450000,
+          gasPrice: 2500000000
+        }
+
+```

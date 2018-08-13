@@ -1,8 +1,8 @@
 // Allows us to use ES6 in our migrations and tests.
 // require('babel-register')
-// let HDWalletProvider = require("truffle-hdwallet-provider");
-// let mnemonic = "engine slight photo empower correct modify rib sea raise knock artwork security";
-// var infura_apikey = "7dzkhERjQJsad7aNgAHw"; 
+let HDWalletProvider = require("truffle-hdwallet-provider");
+let mnemonic = "engine slight photo empower correct modify rib sea raise knock artwork security";
+var infura_apikey = "7dzkhERjQJsad7aNgAHw"; 
 
 //https://truffleframework.com/docs/truffle/reference/configuration
 module.exports = {
@@ -14,17 +14,19 @@ module.exports = {
       gas: 4500000,
       gasPrice: 2500000000, //  Default is 100,000,000,000 (100 Shannon).
     },
- //    ropsten: {
- //      provider: new HDWalletProvider(mnemonic, "https://ropsten.infura.io/" + infura_apikey),
- //      network_id: 3,
- //      gas: 4500000
-	// },
- //    mainnet: {
- //      // https://infura.io/setup?key=7dzkhERjQJsad7aNgAHw
- //      provider: new HDWalletProvider(mnemonic, "https://mainnet.infura.io/" + infura_apikey),
- //      network_id: 4,
- //      gas: 450000,
- //    }
+    ropsten: {
+      provider: new HDWalletProvider(mnemonic, "https://ropsten.infura.io/" + infura_apikey),
+      network_id: 3,
+      gas: 4500000
+      gasPrice: 2500000000
+	},
+    mainnet: {
+      // https://infura.io/setup?key=7dzkhERjQJsad7aNgAHw
+      provider: new HDWalletProvider(mnemonic, "https://mainnet.infura.io/" + infura_apikey),
+      network_id: 4,
+      gas: 450000,
+      gasPrice: 2500000000
+    }
  //  },
  //  solc: {
  //    optimizer: {
