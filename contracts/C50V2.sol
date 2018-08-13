@@ -12,7 +12,7 @@ contract C50V2 is MintableToken, Pausable {
     uint256 public rate; // How many token units a buyer gets per wei
     address public wallet;  // Address where funds are collected
     uint256 public weiRaised; // Amount of wei raised
-
+    bool public paused = false;
 
   /**
    * Event for token purchase logging
@@ -28,24 +28,9 @@ contract C50V2 is MintableToken, Pausable {
     uint256 amount
   );
 
-
-  /**
-   * Event for setting the wallet
-   * @param wallet wallet to receive tokens
-   */
-  event SetWallet(
-    address wallet
-  );
-
-
-  /**
-   * Event to set the rate
-   * @param rate c50 to ethereum
-   **/
-  event SetRate(
-    uint256 indexed rate
-  );
-
+  event Mint(address indexed to, uint256 amount);
+  event SetWallet(address wallet);
+  event SetRate(uint256 indexed rate);
 
   constructor() public {
     totalSupply_ = INITIAL_SUPPLY;
@@ -54,30 +39,11 @@ contract C50V2 is MintableToken, Pausable {
     wallet = msg.sender;
     emit Transfer(0x0, msg.sender, INITIAL_SUPPLY);
   }
- 
-
-   /**
-   * @dev Function to mint tokens
-   * @param _to The address that will receive the minted tokens.
-   * @param _amount The amount of tokens to mint.
-   * @return A boolean that indicates if the operation was successful.
-   */
-  function mint(address _to, uint256 _amount) onlyOwner canMint whenNotPaused public returns (bool) {
-  	require(totalSupply_.add(_amount) <= MAX_SUPPLY);
-
-    totalSupply_ = totalSupply_.add(_amount);
-    balances[_to] = balances[_to].add(_amount);
-    emit Mint(_to, _amount);
-    emit Transfer(address(0), _to, _amount);
-    return true;
-  }
-
 
   //Fallback function
   function () external payable {
     buyTokens(msg.sender);
   }
-
 
   function buyTokens(address _beneficiary) whenNotPaused public payable {
     uint256 _weiAmount = msg.value;
@@ -85,16 +51,20 @@ contract C50V2 is MintableToken, Pausable {
     require(_weiAmount > 0);
 
     // calculate token amount to be created
-    uint256 _tokenAmount = _weiAmount.mul(rate);
-    
+    uint256 _amount = _weiAmount.mul(rate);
 
     // update state
     weiRaised = weiRaised.add(_weiAmount);
 
-    require(mint(_beneficiary, _tokenAmount));
-    emit TokenPurchase(msg.sender, _beneficiary, _weiAmount, _tokenAmount);
+    require(totalSupply_.add(_amount) <= MAX_SUPPLY);
 
-    wallet.transfer(msg.value);
+    totalSupply_ = totalSupply_.add(_amount);
+    balances[_beneficiary] = balances[_beneficiary].add(_amount);
+    emit Mint(_beneficiary, _amount);
+    emit Transfer(address(0), _beneficiary, _amount);
+    emit TokenPurchase(msg.sender, _beneficiary, _weiAmount, _amount);
+
+    wallet.transfer(_weiAmount);
   }
 
 

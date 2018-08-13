@@ -23,66 +23,9 @@ contract('C50V2', function ([_, owner, recipient, anotherAccount]) {
     token = await C50.new({from: owner});
   });
 
-  describe('accepting payments', function () {
-    it('should accept payments', async function () {
-      await token.send(value);
-      await token.buyTokens(recipient, { value: value, from: anotherAccount });
-    });
-  });
-
-  describe('high-level purchase', function () {
-    it('should log purchase', async function () {
-      const { logs } = await token.sendTransaction({ value: value, from: recipient });
-      const event = logs.find(e => e.event === 'TokenPurchase');
-      should.exist(event);
-      event.args.anotherAccount.should.eq(recipient);
-      event.args.beneficiary.should.eq(recipient);
-      event.args.value.should.be.bignumber.equal(value);
-      event.args.amount.should.be.bignumber.equal(expectedTokenAmount);
-    });
-
-    it('should assign tokens to sender', async function () {
-      await token.sendTransaction({ value: value, from: recipient });
-      const balance = await token.balanceOf(recipient);
-      balance.should.be.bignumber.equal(expectedTokenAmount);
-    });
-
-    it('should forward funds to owner', async function () {
-      const pre = await token.balanceOf(owner);
-      await token.sendTransaction({ value, from: recipient });
-      const post = await token.balanceOf(owner);
-      post.minus(pre).should.be.bignumber.equal(value);
-    });
-  });
-
-  describe('low-level purchase', function () {
-    it('should log purchase', async function () {
-      const { logs } = await token.buyTokens(recipient, { value: value, from: anotherAccount });
-      const event = logs.find(e => e.event === 'TokenPurchase');
-      should.exist(event);
-      event.args.anotherAccount.should.eq(anotherAccount);
-      event.args.beneficiary.should.eq(recipient);
-      event.args.value.should.be.bignumber.equal(value);
-      event.args.amount.should.be.bignumber.equal(expectedTokenAmount);
-    });
-
-    it('should assign tokens to beneficiary', async function () {
-      await token.buyTokens(recipient, { value, from: anotherAccount });
-      const balance = await token.balanceOf(recipient);
-      balance.should.be.bignumber.equal(expectedTokenAmount);
-    });
-
-    it('should forward funds to owner', async function () {
-      const pre = await token.balanceOf(owner);
-      await token.buyTokens(recipient, { value, from: anotherAccount });
-      const post = await token.balanceOf(owner);
-      post.minus(pre).should.be.bignumber.equal(value);
-    });
-  });
-
   describe('total supply', function () {
     it('returns the total amount of initial tokens', async function () {
-      const totalSupply = await token.maxSupply();
+      const totalSupply = await token.totalSupply();
       assert.equal(totalSupply.toNumber(), _initialSupply);
     });
   });
@@ -113,7 +56,6 @@ contract('C50V2', function ([_, owner, recipient, anotherAccount]) {
         const amount = 21000000 * 100** _decimals ;
 
         it('reverts', async function () {
-          debugger
           await token.transfer(to, amount, { from: owner }).should.be.rejectedWith(EVMRevert);
         });
       });

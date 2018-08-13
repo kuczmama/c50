@@ -28,18 +28,9 @@ contract('C50V2', function ([_, owner, investor, purchaser]) {
     token = await C50.new({from: owner});
   });
 
-
-  describe('total supply', function () {
-    it('returns the total amount of initial tokens', async function () {
-      const totalSupply = await token.maxSupply();
-      assert.equal(totalSupply.toNumber(), _initialSupply);
-    });
-  });
-
   describe('accepting payments', function () {
     it('should accept payments', async function () {
       await token.send(value);
-      await token.buyTokens(investor, { value: value, from: purchaser });
     });
   });
 
@@ -47,11 +38,10 @@ contract('C50V2', function ([_, owner, investor, purchaser]) {
     it('should log purchase', async function () {
       const { logs } = await token.sendTransaction({ value: value, from: investor });
       const event = logs.find(e => e.event === 'TokenPurchase');
-      should.exist(event);
-      event.args.purchaser.should.eq(investor);
-      event.args.beneficiary.should.eq(investor);
-      event.args.value.should.be.bignumber.equal(value);
-      event.args.amount.should.be.bignumber.equal(expectedTokenAmount);
+      assert.equal(event.event, 'TokenPurchase');
+      assert.equal(event.args.purchaser, investor);
+      assert.equal(event.args.value, value);
+      assert.equal(event.args.amount.toNumber(), expectedTokenAmount.toNumber());
     });
 
     it('should assign tokens to sender', async function () {
@@ -61,9 +51,9 @@ contract('C50V2', function ([_, owner, investor, purchaser]) {
     });
 
     it('should forward funds to owner', async function () {
-      const pre = await token.balanceOf(owner);
+      const pre = await web3.eth.getBalance(owner);
       await token.sendTransaction({ value, from: investor });
-      const post = await token.balanceOf(owner);
+      const post = await web3.eth.getBalance(owner);
       post.minus(pre).should.be.bignumber.equal(value);
     });
   });
@@ -72,11 +62,10 @@ contract('C50V2', function ([_, owner, investor, purchaser]) {
     it('should log purchase', async function () {
       const { logs } = await token.buyTokens(investor, { value: value, from: purchaser });
       const event = logs.find(e => e.event === 'TokenPurchase');
-      should.exist(event);
-      event.args.purchaser.should.eq(purchaser);
-      event.args.beneficiary.should.eq(investor);
-      event.args.value.should.be.bignumber.equal(value);
-      event.args.amount.should.be.bignumber.equal(expectedTokenAmount);
+      assert.equal(event.event, 'TokenPurchase');
+      assert.equal(event.args.purchaser, purchaser);
+      assert.equal(event.args.value, value);
+      assert.equal(event.args.amount.toNumber(), expectedTokenAmount.toNumber());
     });
 
     it('should assign tokens to beneficiary', async function () {
@@ -86,9 +75,9 @@ contract('C50V2', function ([_, owner, investor, purchaser]) {
     });
 
     it('should forward funds to owner', async function () {
-      const pre = await token.balanceOf(owner);
+      const pre = await web3.eth.getBalance(owner);
       await token.buyTokens(investor, { value, from: purchaser });
-      const post = await token.balanceOf(owner);
+      const post = await web3.eth.getBalance(owner);
       post.minus(pre).should.be.bignumber.equal(value);
     });
   });
