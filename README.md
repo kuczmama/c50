@@ -30,10 +30,11 @@ chrome://inspect/
 
 1. Update owner address in 1_initial_migration.js
        const C50 = artifacts.require("./C50V2.sol");
+       - Make sure the from address is completelyu lowercase
 
 ```js       
        module.exports = function(deployer, network, accounts) {
-       	return deployer.deploy(C50, {from: "0x20684DacBDf92A919b2C0820A2E51a0C29c266aE"});
+       	return deployer.deploy(C50, {from: "0x20684Dacbdf92a919b2C0820a2e51a0C29c266ae"});
        }
 ```
 
