@@ -26,22 +26,25 @@ chrome://inspect/
 ```
 
 
-## How to deploy c50
+## How to deploy c50 on Ropsten
 
 1. Update owner address in 1_initial_migration.js
        const C50 = artifacts.require("./C50V2.sol");
        - Make sure the from address is completelyu lowercase
 
-```js       
-       module.exports = function(deployer, network, accounts) {
-       	return deployer.deploy(C50, {from: "0x20684Dacbdf92a919b2C0820a2e51a0C29c266ae"});
-       }
+```js 
+  //return deployer.deploy(C50, [owner address], {from: [creator address]});
+
+  module.exports = function(deployer, network, accounts) {
+    return deployer.deploy(C50, "0x3ff32898abff9c57e3ae04ca4a3565d4c81b209e", {from: "0xd6ea58a0149400e6d35b3b0e3e06ff20b8479cb0"});
+  }
+
 ```
 
 2. Run the command
 
 ```sh
-    truffle migrate --network development
+    truffle migrate --network ropsten
 ```
 
 1. Check to make sure it works.  Also set the gasPrice to gasPrice: 2500000000
@@ -70,3 +73,5 @@ chrome://inspect/
         }
 
 ```
+
+# To Interact with the contract
