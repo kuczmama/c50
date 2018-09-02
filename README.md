@@ -30,12 +30,13 @@ chrome://inspect/
 
 1. Update owner address in 1_initial_migration.js
        const C50 = artifacts.require("./C50V2.sol");
-       - Make sure the from address is completelyu lowercase
+       - Make sure the from address is completely lowercase
 
 ```js 
   //return deployer.deploy(C50, [owner address], {from: [creator address]});
 
   module.exports = function(deployer, network, accounts) {
+  
     return deployer.deploy(C50, "0x3ff32898abff9c57e3ae04ca4a3565d4c81b209e", {from: "0xd6ea58a0149400e6d35b3b0e3e06ff20b8479cb0"});
   }
 
@@ -75,3 +76,19 @@ chrome://inspect/
 ```
 
 # To Interact with the contract
+
+1. Go to the contracts tab on myetherwallet https://www.myetherwallet.com/#contracts
+
+2. Add the contract address and the ABI.  The ABI will be found in c50/build/contracts/C50V2.json.  You will need to copy only the ABI part, if you copy anything else you won't be able to do transactions.  
+```js
+{
+  "contractName": "C50V2",
+  "abi": [copy everything here],
+}
+```
+Note: When you paste in the contract address, make sure it is the checksummed address.  WHich means the address will be uppercase and lowercase letters. https://kb.myetherwallet.com/addresses/what-does-checksummed-mean.html
+
+
+<img align="right" src="https://user-images.githubusercontent.com/5359580/44953719-2c09b900-aed2-11e8-9477-e5004253fbd3.png" alt="My Ether Wallet Contract Tab">
+
+3. Do your transaction with your wallet provider, ie. Trezor, Ledger, Metamask, etc.
