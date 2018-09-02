@@ -35,11 +35,12 @@
     "webpack-dev-server": "^2.3.0"
   },
   "dependencies": {
+    "@daonomic/trezor-wallet-provider": "^0.0.9",
     "bluebird": "^3.5.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-bignumber": "^2.0.2",
-    "truffle-hdwallet-provider": "^0.0.3",
+    "truffle-hdwallet-provider": "^0.0.6",
     "zeppelin-solidity": "^1.7.0"
   }
 }
