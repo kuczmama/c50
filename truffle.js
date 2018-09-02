@@ -1,7 +1,7 @@
 // Allows us to use ES6 in our migrations and tests.
 require('babel-register')
 let HDWalletProvider = require("truffle-hdwallet-provider");
-let mnemonic = "grape canyon dog usual deal artist burst advice mix innocent hood unique";
+let mnemonic = "wrestle outdoor refuse wrong breeze black sea soon salmon cricket suspect improve";
 var infura_apikey = "7dzkhERjQJsad7aNgAHw"; 
 
 //https://truffleframework.com/docs/truffle/reference/configuration
