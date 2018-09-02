@@ -37,6 +37,7 @@ contract C50V2 is MintableToken, Pausable {
     balances[_owner] = INITIAL_SUPPLY;
     rate = 500;
     wallet = _owner;
+    owner = _owner;
     emit Transfer(0x0, _owner, INITIAL_SUPPLY);
   }
 

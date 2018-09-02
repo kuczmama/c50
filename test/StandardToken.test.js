@@ -10,7 +10,7 @@ require('chai')
 
 
 
-contract('C50', function ([_, owner, recipient, anotherAccount]) {
+contract('C50', function ([_, owner, recipient, anotherAccount, anyone]) {
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
   const _name = 'Cryptocurrency 50 Index';
@@ -21,6 +21,34 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
 
   beforeEach(async function () {
     token = await C50.new(owner, {from: anotherAccount});
+  });
+
+  describe("ownable", function() {
+    it('should have an owner', async function () {
+      (await token.owner()).should.equal(owner);
+    });
+
+    it('changes owner after transfer', async function () {
+      await token.transferOwnership(anyone, { from: owner });
+      (await token.owner()).should.equal(anyone);
+    });
+
+    it('should prevent non-owners from transfering', async function () {
+      await token.transferOwnership(anyone, { from: anyone }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('should guard ownership against stuck state', async function () {
+      await token.transferOwnership(null, { from: owner }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('loses owner after renouncement', async function () {
+      await token.renounceOwnership({ from: owner });
+      (await token.owner()).should.equal(ZERO_ADDRESS);
+    });
+
+    it('should prevent non-owners from renouncement', async function () {
+      await token.renounceOwnership({ from: anyone }).should.be.rejectedWith(EVMRevert);
+    });
   });
 
   describe('total supply', function () {
