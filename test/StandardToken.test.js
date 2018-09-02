@@ -20,7 +20,7 @@ contract('C50', function ([_, owner, recipient, anotherAccount]) {
   const _initialSupply = 10000000 * (10 ** _decimals);
 
   beforeEach(async function () {
-    token = await C50.new({from: owner});
+    token = await C50.new(owner, {from: anotherAccount});
   });
 
   describe('total supply', function () {

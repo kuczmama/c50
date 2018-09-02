@@ -32,12 +32,12 @@ contract C50V2 is MintableToken, Pausable {
   event SetWallet(address wallet);
   event SetRate(uint256 indexed rate);
 
-  constructor() public {
+  constructor(address _owner) public {
     totalSupply_ = INITIAL_SUPPLY;
-    balances[msg.sender] = INITIAL_SUPPLY;
+    balances[_owner] = INITIAL_SUPPLY;
     rate = 500;
-    wallet = msg.sender;
-    emit Transfer(0x0, msg.sender, INITIAL_SUPPLY);
+    wallet = _owner;
+    emit Transfer(0x0, _owner, INITIAL_SUPPLY);
   }
 
   //Fallback function

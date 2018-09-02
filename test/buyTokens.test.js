@@ -11,7 +11,7 @@ function ether (n) {
   return new web3.BigNumber(web3.toWei(n, 'ether'));
 }
 
-contract('C50V2', function ([_, owner, investor, purchaser]) {
+contract('C50V2', function ([_, owner, investor, purchaser, anotherAccount]) {
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
   const _name = 'Cryptocurrency 50 Index';
@@ -25,7 +25,7 @@ contract('C50V2', function ([_, owner, investor, purchaser]) {
   const expectedTokenAmount = rate.mul(value);
 
   beforeEach(async function () {
-    token = await C50.new({from: owner});
+    token = await C50.new(owner, {from: anotherAccount});
   });
 
   describe('accepting payments', function () {

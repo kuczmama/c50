@@ -52,6 +52,6 @@ module.exports = function(deployer, network, accounts) {
         Promise.promisifyAll(web3.eth, { suffix: "Promise" })
     }
      web3.eth.getBlockPromise('latest').then(block => {
-        //return deployer.deploy(C50);
+        // return deployer.deploy(C50);
     });
 };

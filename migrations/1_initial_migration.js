@@ -1,5 +1,5 @@
 const C50 = artifacts.require("./C50V2.sol");
 
 module.exports = function(deployer, network, accounts) {
-	return deployer.deploy(C50, {from: "0xe7e09b476c2b742b5c237ecb4dc201672ccc6bb1"});
+	return deployer.deploy(C50, accounts[1], {from: "0x171a848F509eF3d9c150F82114d94E26eA6c4A0E"});
 }
